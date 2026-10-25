@@ -20,6 +20,18 @@ services:
     networks:
       - public_net
 
+  postgres:
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-clofovoz_healtech}
+      POSTGRES_USER: ${POSTGRES_USER:-clofovoz_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-C10f0V0z_HealTech_Secure2026!}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - internal_net
+
   redis:
     image: redis:7-alpine
     restart: always
@@ -35,7 +47,7 @@ services:
       dockerfile: apps/api/Dockerfile
     restart: always
     environment:
-      - DATABASE_URL=${DATABASE_URL:-}
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-clofovoz_admin}:${POSTGRES_PASSWORD:-C10f0V0z_HealTech_Secure2026!}@postgres:5432/${POSTGRES_DB:-clofovoz_healtech}
       - REDIS_URL=redis://redis:6379/0
       - STORAGE_ENDPOINT=${STORAGE_ENDPOINT:-}
       - JWT_SECRET=${JWT_SECRET:-clofovoz_secret_key_2026}
@@ -46,6 +58,7 @@ services:
       - "traefik.http.routers.api.entrypoints=web,websecure"
       - "traefik.http.services.api.loadbalancer.server.port=8000"
     depends_on:
+      - postgres
       - redis
     networks:
       - internal_net
@@ -63,9 +76,10 @@ services:
           memory: 8G
     environment:
       - REDIS_URL=redis://redis:6379/0
-      - DATABASE_URL=${DATABASE_URL:-}
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-clofovoz_admin}:${POSTGRES_PASSWORD:-C10f0V0z_HealTech_Secure2026!}@postgres:5432/${POSTGRES_DB:-clofovoz_healtech}
       - STORAGE_ENDPOINT=${STORAGE_ENDPOINT:-}
     depends_on:
+      - postgres
       - redis
     networks:
       - internal_net
@@ -76,5 +90,6 @@ networks:
     internal: true
 
 volumes:
+  postgres_data:
   redis_data:
   traefik_certs:

@@ -1,3 +1,8 @@
+from database import engine, Base
+import models
+
+# Crear esquemas relacionales automáticamente en PostgreSQL
+Base.metadata.create_all(bind=engine)
 import os
 import json
 import uuid
