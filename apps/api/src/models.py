@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 from sqlalchemy import Column, String, Float, DateTime, ForeignKey, Text
 from sqlalchemy.dialects.postgresql import UUID
-from database import Base
+from src.database import Base
 
 class Patient(Base):
     __tablename__ = "patients"
