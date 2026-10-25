@@ -1,5 +1,5 @@
-from database import engine, Base
-import models
+from src.database import engine, Base
+import src.models
 
 # Crear esquemas relacionales automáticamente en PostgreSQL
 Base.metadata.create_all(bind=engine)
