@@ -40,9 +40,9 @@ services:
       - JWT_SECRET=${JWT_SECRET:-clofovoz_secret_key_2026}
     labels:
       - "traefik.enable=true"
+      - "traefik.docker.network=infra_public_net"
       - "traefik.http.routers.api.rule=Host(`api.clofovozhealtech.com`)"
       - "traefik.http.routers.api.entrypoints=web,websecure"
-      - "traefik.http.routers.api.tls.certresolver=letsencrypt"
       - "traefik.http.services.api.loadbalancer.server.port=8000"
     depends_on:
       - redis
