@@ -56,6 +56,7 @@ services:
       - "traefik.docker.network=infra_public_net"
       - "traefik.http.routers.api.rule=Host(`api.clofovozhealtech.com`)"
       - "traefik.http.routers.api.entrypoints=web,websecure"
+      - "traefik.http.routers.api.tls.certresolver=letsencrypt"
       - "traefik.http.services.api.loadbalancer.server.port=8000"
     depends_on:
       - postgres
@@ -83,6 +84,25 @@ services:
       - redis
     networks:
       - internal_net
+
+  web:
+    build:
+      context: ..
+      dockerfile: apps/web/Dockerfile
+    restart: always
+    environment:
+      - NEXT_PUBLIC_API_URL=https://api.clofovozhealtech.com
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=infra_public_net"
+      - "traefik.http.routers.web.rule=Host(`clofovozhealtech.com`) || Host(`www.clofovozhealtech.com`)"
+      - "traefik.http.routers.web.entrypoints=web,websecure"
+      - "traefik.http.routers.web.tls.certresolver=letsencrypt"
+      - "traefik.http.services.web.loadbalancer.server.port=3000"
+    depends_on:
+      - api
+    networks:
+      - public_net
 
 networks:
   public_net:
